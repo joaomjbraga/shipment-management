@@ -1,0 +1,12 @@
+{
+  "name": "shipment-management",
+  "version": "1.0.0",
+  "description": "API de entregas para gestão de encomendas, com perfis de acesso para vendedores e clientes, e rastreamento de status de pedidos.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx --watch src/server.ts"
+  },
+  "author": "João M J Braga",
+  "license": "MIT"
+}
