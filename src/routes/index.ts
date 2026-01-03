@@ -1,8 +1,8 @@
-import { Router, type Request, type Response} from 'express'
+import { Router } from 'express'
+import { usersRoute } from './users.routes.js'
 
 const route = Router()
 
-route.get('/', (request: Request, response: Response)  => {
+route.use("/users", usersRoute)
 
-  return response.json({messagem: "rodando normal"})
-})
+export { route }
