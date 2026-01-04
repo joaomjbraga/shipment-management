@@ -3,6 +3,8 @@ import z from "zod"
 import { prisma } from '@/utils/prisma.js'
 import { AppError } from '@/utils/AppError.js'
 import { compare } from 'bcrypt'
+import { authConfig } from '@/config/auth.js'
+import jwt from 'jsonwebtoken'
 
 class SessionsController {
   async SessionLogin (request: Request, response: Response, next: NextFunction) {
@@ -27,7 +29,19 @@ class SessionsController {
         throw new AppError("Invalid email or password.", 401)
       }
 
-      return response.json({message: "Acesso Liberado!"})
+      const {secret, options } = authConfig.jwt
+
+      const token = jwt.sign(
+        {role: user.role ?? "customer"},
+        secret,
+        {
+          ...options,
+          subject: user.id
+        }
+      )
+      const {password: hashedPassword, ...userWithoutPassword} = user
+
+      return response.json({token, user : userWithoutPassword})
 
     } catch (error) {
       next(error)
