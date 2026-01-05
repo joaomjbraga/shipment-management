@@ -1,10 +1,14 @@
-import type { SignOptions } from 'jsonwebtoken'
+import type { SignOptions } from "jsonwebtoken"
+
+if (!process.env.JWT_SECRET) {
+  throw new Error("JWT_SECRET is not defined")
+}
 
 export const authConfig = {
   jwt: {
-    secret: process.env.JWT_SECRET as string,
+    secret: process.env.JWT_SECRET,
     options: {
       expiresIn: "1d",
-    } satisfies SignOptions
-  }
-}
+    } satisfies SignOptions,
+  },
+} as const
