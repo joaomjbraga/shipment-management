@@ -9,7 +9,14 @@ export function ErrorHandling(err: any, req: Request, res: Response, next: NextF
   }
 
   if(err instanceof ZodError) {
-    return res.status(400).json({message: "erro de validação", issues: err.format})
+    const errors = err.issues.map((error) => ({
+      campo: error.path.join('.'),
+      mensagem: error.message
+    }))
+    return res.status(400).json({
+      message: "Erro de validação",
+      errors
+    })
   }
   return res.status(500).json({ message: "Erro no servidor" })
 }

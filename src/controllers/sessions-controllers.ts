@@ -11,8 +11,8 @@ class SessionsController {
     try {
 
       const bodyschema = z.object({
-        email: z.string().email(),
-        password: z.string()
+        email: z.string().email("Invalid email format"),
+        password: z.string().min(1, "Password is required")
       })
 
       const {email, password} = bodyschema.parse(request.body)

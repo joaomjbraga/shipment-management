@@ -46,6 +46,7 @@ class UserControlles {
           id: true,
           name: true,
           email: true,
+          role: true,
           createdAt: true,
           updateAt: true
         }
@@ -71,6 +72,14 @@ class UserControlles {
       const { id } = paramsSchema.parse(request.params)
       const data = bodySchema.parse(request.body)
 
+      if (!request.user) {
+        throw new AppError("Unauthorized", 401)
+      }
+
+      if (request.user.role !== "sale" && request.user.id !== id) {
+        throw new AppError("You can only update your own profile", 403)
+      }
+
       const userExists = await prisma.users.findUnique({
         where: { id }
       })
@@ -88,7 +97,7 @@ class UserControlles {
         })
 
         if (userWithSameEmail) {
-          throw new AppError("Email already in use")
+          throw new AppError("Email already in use", 400)
         }
       }
 
@@ -118,6 +127,14 @@ class UserControlles {
       })
 
       const { id } = paramsSchema.parse(request.params)
+
+      if (!request.user) {
+        throw new AppError("Unauthorized", 401)
+      }
+
+      if (request.user.role !== "sale" && request.user.id !== id) {
+        throw new AppError("You can only delete your own profile", 403)
+      }
 
       const userExists = await prisma.users.findUnique({
         where: { id }
