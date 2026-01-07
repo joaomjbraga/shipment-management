@@ -21,9 +21,14 @@ class DeliveriesLogsController {
     throw new AppError("delivery not found", 404)
   }
 
+  if(deliveries.status === "delivered") {
+    throw new AppError("this order has already been delivered", )
+  }
+
   if(deliveries.status === "processing") {
     throw new AppError("change status to shipped")
   }
+
 
   await prisma.deliveryLog.create({
     data: {
@@ -44,6 +49,15 @@ async Show ( request: Request, response: Response ) {
   const delivery = await prisma.delivery.findUnique({
     where: {
       id: deliveries_id
+    }, select: {
+     id: true,
+    userID: true,
+    description:true,
+    status: true,
+    createdAt: true,
+    updateAt: true,
+    logs: true
+
     }
   })
 
