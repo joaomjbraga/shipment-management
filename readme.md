@@ -178,7 +178,7 @@ docker-compose --version
 ### 1. Clone o repositório
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/joaomjbraga/shipment-management.git
 cd shipment-management
 ```
 
