@@ -6,7 +6,7 @@ export const swaggerSpec = swaggerJsdoc({
     info: {
       title: 'Shipment Management API',
       version: '1.0.0',
-      description: 'Sistema completo de gerenciamento de entregas desenvolvido em Node.js com TypeScript',
+      description: 'Sistema de gerenciamento de entregas desenvolvido em Node.js com TypeScript',
       contact: {
         name: 'João M J Braga',
       },
