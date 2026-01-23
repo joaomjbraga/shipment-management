@@ -30,6 +30,7 @@ Este é um sistema RESTful de gestão de entregas que permite:
 - **Autorização por perfis** (customer e sale)
 
 O sistema diferencia dois tipos de usuários:
+
 - **Customer (Cliente)**: Pode criar entregas para si mesmo e visualizar logs
 - **Sale (Vendedor)**: Pode gerenciar todas as entregas, criar logs e atualizar status
 
@@ -111,39 +112,42 @@ O projeto utiliza **PostgreSQL** como banco de dados, gerenciado pelo **Prisma O
 ### Modelos de Dados
 
 #### **Users (Usuários)**
+
 Armazena informações dos usuários do sistema.
 
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| `id` | UUID | Identificador único (gerado automaticamente) |
-| `name` | String | Nome do usuário |
-| `email` | String | Email único do usuário |
-| `password` | String | Senha criptografada com bcrypt |
-| `role` | Enum | Perfil do usuário: `customer` ou `sale` (padrão: customer) |
-| `created_at` | DateTime | Data de criação (automático) |
-| `update_at` | DateTime | Data de atualização (automático) |
+| Campo        | Tipo     | Descrição                                                  |
+| ------------ | -------- | ---------------------------------------------------------- |
+| `id`         | UUID     | Identificador único (gerado automaticamente)               |
+| `name`       | String   | Nome do usuário                                            |
+| `email`      | String   | Email único do usuário                                     |
+| `password`   | String   | Senha criptografada com bcrypt                             |
+| `role`       | Enum     | Perfil do usuário: `customer` ou `sale` (padrão: customer) |
+| `created_at` | DateTime | Data de criação (automático)                               |
+| `update_at`  | DateTime | Data de atualização (automático)                           |
 
 #### **Delivery (Entregas)**
+
 Armazena informações das entregas cadastradas.
 
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| `id` | UUID | Identificador único |
-| `user_id` | UUID | Referência ao usuário (cliente) |
-| `description` | String | Descrição da entrega |
-| `status` | Enum | Status: `processing`, `shipped` ou `delivered` (padrão: processing) |
-| `created_at` | DateTime | Data de criação |
-| `update_at` | DateTime | Data de atualização |
+| Campo         | Tipo     | Descrição                                                           |
+| ------------- | -------- | ------------------------------------------------------------------- |
+| `id`          | UUID     | Identificador único                                                 |
+| `user_id`     | UUID     | Referência ao usuário (cliente)                                     |
+| `description` | String   | Descrição da entrega                                                |
+| `status`      | Enum     | Status: `processing`, `shipped` ou `delivered` (padrão: processing) |
+| `created_at`  | DateTime | Data de criação                                                     |
+| `update_at`   | DateTime | Data de atualização                                                 |
 
 #### **DeliveryLog (Logs de Entrega)**
+
 Armazena o histórico de mudanças de status das entregas.
 
-| Campo | Tipo | Descrição |
-|-------|------|-----------|
-| `id` | UUID | Identificador único |
-| `delivery_id` | UUID | Referência à entrega |
-| `description` | String | Descrição da mudança (geralmente o status) |
-| `created_at` | DateTime | Data de criação do log |
+| Campo         | Tipo     | Descrição                                  |
+| ------------- | -------- | ------------------------------------------ |
+| `id`          | UUID     | Identificador único                        |
+| `delivery_id` | UUID     | Referência à entrega                       |
+| `description` | String   | Descrição da mudança (geralmente o status) |
+| `created_at`  | DateTime | Data de criação do log                     |
 
 ### Relacionamentos
 
@@ -204,6 +208,7 @@ JWT_SECRET="seu-jwt-secret-super-seguro-aqui"
 ```
 
 **Importante:**
+
 - `DATABASE_URL`: String de conexão com o PostgreSQL. O formato é: `postgresql://usuário:senha@host:porta/nome-do-banco`
 - `JWT_SECRET`: Chave secreta para assinar os tokens JWT. Use uma string aleatória e segura (recomendado: pelo menos 32 caracteres)
 
@@ -240,6 +245,7 @@ services:
 ```
 
 **Explicação:**
+
 - **image**: Utiliza a imagem oficial Bitnami do PostgreSQL
 - **ports**: Expõe a porta 5432 do container para a porta 5432 da máquina local
 - **environment**: Define usuário, senha e nome do banco de dados
@@ -301,6 +307,7 @@ O servidor estará rodando em `http://localhost:3333`
 ### Verificando se está funcionando
 
 Após iniciar o servidor, você verá a mensagem:
+
 ```
 Servidor ON
 ```
@@ -314,11 +321,13 @@ Todas as rotas estão prefixadas com a base URL: `http://localhost:3333`
 ### 🔐 Autenticação (`/sessions`)
 
 #### `POST /sessions`
+
 Realiza login e retorna token JWT.
 
 **Autenticação:** Não requerida
 
 **Body:**
+
 ```json
 {
   "email": "usuario@example.com",
@@ -327,6 +336,7 @@ Realiza login e retorna token JWT.
 ```
 
 **Resposta de Sucesso (200):**
+
 ```json
 {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -346,11 +356,13 @@ Realiza login e retorna token JWT.
 ### 👤 Usuários (`/users`)
 
 #### `POST /users`
+
 Cria um novo usuário.
 
 **Autenticação:** Não requerida
 
 **Body:**
+
 ```json
 {
   "name": "João Silva",
@@ -360,6 +372,7 @@ Cria um novo usuário.
 ```
 
 **Resposta de Sucesso (201):**
+
 ```json
 {
   "id": "uuid",
@@ -372,6 +385,7 @@ Cria um novo usuário.
 ```
 
 #### `GET /users`
+
 Lista todos os usuários (somente vendedores).
 
 **Autenticação:** Requerida (Bearer Token)
@@ -379,11 +393,13 @@ Lista todos os usuários (somente vendedores).
 **Autorização:** Apenas usuários com role `sale`
 
 **Headers:**
+
 ```
 Authorization: Bearer <token>
 ```
 
 **Resposta de Sucesso (200):**
+
 ```json
 [
   {
@@ -398,18 +414,22 @@ Authorization: Bearer <token>
 ```
 
 #### `PUT /users/:id`
+
 Atualiza um usuário.
 
 **Autenticação:** Requerida (Bearer Token)
 
 **Autorização:**
+
 - Usuário pode atualizar seu próprio perfil
 - Vendedores podem atualizar qualquer perfil
 
 **Parâmetros de URL:**
+
 - `id`: UUID do usuário
 
 **Body (todos os campos opcionais):**
+
 ```json
 {
   "name": "João Silva Atualizado",
@@ -419,6 +439,7 @@ Atualiza um usuário.
 ```
 
 **Resposta de Sucesso (200):**
+
 ```json
 {
   "id": "uuid",
@@ -431,15 +452,18 @@ Atualiza um usuário.
 ```
 
 #### `DELETE /users/:id`
+
 Deleta um usuário.
 
 **Autenticação:** Requerida (Bearer Token)
 
 **Autorização:**
+
 - Usuário pode deletar seu próprio perfil
 - Vendedores podem deletar qualquer perfil
 
 **Parâmetros de URL:**
+
 - `id`: UUID do usuário
 
 **Resposta de Sucesso (204):** Sem conteúdo
@@ -451,6 +475,7 @@ Deleta um usuário.
 **Todas as rotas de entregas requerem autenticação e autorização de vendedor (`sale`).**
 
 #### `POST /deliveries`
+
 Cria uma nova entrega.
 
 **Autenticação:** Requerida (Bearer Token)
@@ -458,6 +483,7 @@ Cria uma nova entrega.
 **Autorização:** Apenas usuários com role `sale`
 
 **Body:**
+
 ```json
 {
   "user_id": "uuid-do-cliente",
@@ -466,6 +492,7 @@ Cria uma nova entrega.
 ```
 
 **Resposta de Sucesso (201):**
+
 ```json
 {
   "id": "uuid",
@@ -478,6 +505,7 @@ Cria uma nova entrega.
 ```
 
 #### `GET /deliveries`
+
 Lista todas as entregas.
 
 **Autenticação:** Requerida (Bearer Token)
@@ -485,6 +513,7 @@ Lista todas as entregas.
 **Autorização:** Apenas usuários com role `sale`
 
 **Resposta de Sucesso (200):**
+
 ```json
 [
   {
@@ -503,6 +532,7 @@ Lista todas as entregas.
 ```
 
 #### `PATCH /deliveries/:id/status`
+
 Atualiza o status de uma entrega.
 
 **Autenticação:** Requerida (Bearer Token)
@@ -510,9 +540,11 @@ Atualiza o status de uma entrega.
 **Autorização:** Apenas usuários com role `sale`
 
 **Parâmetros de URL:**
+
 - `id`: UUID da entrega
 
 **Body:**
+
 ```json
 {
   "status": "shipped"
@@ -520,11 +552,13 @@ Atualiza o status de uma entrega.
 ```
 
 **Valores permitidos para status:**
+
 - `processing` - Em processamento
 - `shipped` - Enviado
 - `delivered` - Entregue
 
 **Resposta de Sucesso (200):**
+
 ```json
 {
   "id": "uuid",
@@ -543,6 +577,7 @@ Atualiza o status de uma entrega.
 ### 📋 Logs de Entrega (`/deliveries-logs`)
 
 #### `POST /deliveries-logs`
+
 Cria um novo log para uma entrega.
 
 **Autenticação:** Requerida (Bearer Token)
@@ -550,6 +585,7 @@ Cria um novo log para uma entrega.
 **Autorização:** Apenas usuários com role `sale`
 
 **Body:**
+
 ```json
 {
   "delivery_id": "uuid-da-entrega",
@@ -558,6 +594,7 @@ Cria um novo log para uma entrega.
 ```
 
 **Resposta de Sucesso (201):**
+
 ```json
 {
   "id": "uuid",
@@ -568,6 +605,7 @@ Cria um novo log para uma entrega.
 ```
 
 #### `GET /deliveries-logs/:deliveries_id/show`
+
 Lista todos os logs de uma entrega específica.
 
 **Autenticação:** Requerida (Bearer Token)
@@ -575,9 +613,11 @@ Lista todos os logs de uma entrega específica.
 **Autorização:** Usuários com role `sale` ou `customer`
 
 **Parâmetros de URL:**
+
 - `deliveries_id`: UUID da entrega
 
 **Resposta de Sucesso (200):**
+
 ```json
 [
   {
@@ -615,12 +655,14 @@ curl -X GET http://localhost:3333/users \
 ### Perfis de Usuário
 
 #### **Customer (Cliente)**
+
 - Pode criar seu próprio usuário
 - Pode atualizar seu próprio perfil
 - Pode deletar seu próprio perfil
 - Pode visualizar logs de entregas relacionadas a ele
 
 #### **Sale (Vendedor)**
+
 - Pode criar usuários
 - Pode listar todos os usuários
 - Pode atualizar qualquer usuário
@@ -733,6 +775,7 @@ npx prisma migrate reset
 ### Controllers
 
 Cada controller é responsável por uma entidade específica e contém os métodos:
+
 - Create (POST)
 - Index (GET - listar)
 - Update/Upgrade (PUT/PATCH)
@@ -781,4 +824,3 @@ Contribuições são bem-vindas! Sinta-se à vontade para abrir issues ou pull r
 ---
 
 **Desenvolvido com ❤️ usando TypeScript e Node.js**
-

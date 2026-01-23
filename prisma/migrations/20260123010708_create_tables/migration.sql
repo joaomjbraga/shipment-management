@@ -2,7 +2,7 @@
 CREATE TYPE "UserRole" AS ENUM ('customer', 'sale');
 
 -- CreateEnum
-CREATE TYPE "DelivereStatus" AS ENUM ('processing', 'shipped', 'delivered');
+CREATE TYPE "DeliveriesStatus" AS ENUM ('processing', 'shipped', 'delivered');
 
 -- CreateTable
 CREATE TABLE "users" (
@@ -18,15 +18,15 @@ CREATE TABLE "users" (
 );
 
 -- CreateTable
-CREATE TABLE "deliveres" (
+CREATE TABLE "delivers" (
     "id" TEXT NOT NULL,
     "user_id" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "status" "DelivereStatus" NOT NULL DEFAULT 'processing',
+    "status" "DeliveriesStatus" NOT NULL DEFAULT 'processing',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "update_at" TIMESTAMP(3),
 
-    CONSTRAINT "deliveres_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "delivers_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -44,7 +44,7 @@ CREATE TABLE "delivery_logs" (
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
 
 -- AddForeignKey
-ALTER TABLE "deliveres" ADD CONSTRAINT "deliveres_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "delivers" ADD CONSTRAINT "delivers_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "delivery_logs" ADD CONSTRAINT "delivery_logs_delivery_id_fkey" FOREIGN KEY ("delivery_id") REFERENCES "deliveres"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "delivery_logs" ADD CONSTRAINT "delivery_logs_delivery_id_fkey" FOREIGN KEY ("delivery_id") REFERENCES "delivers"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
